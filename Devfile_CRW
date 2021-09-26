@@ -1,0 +1,95 @@
+For 
+
+
+apiVersion: 1.0.0
+metadata:
+  generateName: designer-test
+projects:
+  - name: jaxrs-app
+    source:
+      location: 'git@github.com:devadastv/jaxrs-app.git'
+      branch: master
+      type: git
+components:
+  - mountSources: true
+    endpoints:
+      - attributes:
+          path: /frontend
+        name: designer-front-ui
+        port: 9080
+    memoryLimit: 2927M
+    type: dockerimage
+    alias: designer
+    image: 'devadastv.jfrog.io/devadas-docker/devadas:latest'
+    env:
+      - name: CHE_PROJECTS_ROOT
+        value: /workspace/project
+  - type: chePlugin
+    id: redhat/vscode-xml/latest
+    memoryLimit: 512Mi
+  - type: chePlugin
+    id: redhat/vscode-yaml/latest
+    memoryLimit: 512Mi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+JFROG:
+docker build -t devadastv/my-designer:latest .
+docker tag devadastv/my-designer devadastv.jfrog.io/devadas-docker-local/devadas:latest
+docker push devadastv.jfrog.io/devadas-docker-local/devadas:latest
+
+CRW Devfile
+image: 'devadastv.jfrog.io/devadas-docker/devadas:latest'
+
+https://devadastv.jfrog.io/artifactory/devadas-docker-local/
+docker pull devadastv.jfrog.io/devadas-docker/devadas:latest
+
+
+
+apiVersion: 1.0.0
+metadata:
+  name: designer-test
+projects:
+  - name: jaxrs-app
+    source:
+      location: 'git@github.com:devadastv/jaxrs-app.git'
+      type: git
+      branch: master
+components:
+  - mountSources: true
+    endpoints:
+      - attributes:
+          path: /frontend
+        name: designer-front-ui
+        port: 9080
+    memoryLimit: 2927M
+    type: dockerimage
+    alias: designer
+    image: 'devadastv/my-designer-base:latest'
+    env:
+      - value: /tmp
+        name: CHE_PROJECTS_ROOT
+  - id: redhat/vscode-xml/latest
+    memoryLimit: 512Mi
+    type: chePlugin
+  - id: redhat/vscode-yaml/latest
+    memoryLimit: 512Mi
+    type: chePlugin
